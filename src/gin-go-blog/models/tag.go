@@ -30,22 +30,15 @@ func GetTagTotal(maps interface{}) (count int) {
 func ExistTagByName(name string) bool {
 	var tag Tag
 	db.Select("id").Where("name = ?", name).First(&tag)
-	if tag.ID > 0 {
-		return true
-	}
 
-	return false
+	return tag.ID > 0
 }
 
 func ExistTagByID(id int) bool {
 	var tag Tag
 	db.Select("id").Where("id = ?", id).First(&tag)
 
-	if tag.ID > 0 {
-		return true
-	}
-
-	return false
+	return tag.ID > 0
 }
 
 func AddTag(name string, state int, createdBy string) bool {
