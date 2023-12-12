@@ -29,12 +29,24 @@ const (
 	FATAL
 )
 
-func init() {
-	filepath := getLogFileFullPath()
+func Setup() {
+
+	filepath := getLogFilePath()
+	filename := getLogFileName()
+
+	filepath += filename
+
 	F = openLogFile(filepath)
 
 	logger = log.New(F, DefaultPrefix, log.LstdFlags)
 }
+
+// func init() {
+// 	filepath := getLogFileFullPath()
+// 	F = openLogFile(filepath)
+
+// 	logger = log.New(F, DefaultPrefix, log.LstdFlags)
+// }
 
 func Debug(v ...interface{}) {
 	setPrefix(DEBUG)

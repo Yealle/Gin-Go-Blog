@@ -1,0 +1,9 @@
+{
+    "cmake.configureOnOpen": true,
+    "editor.fontSize": 17,
+    "workbench.colorCustomizations": {
+        "[GitHub Dark High Contrast]": {
+            "editor.selectionBackground": "#778899"
+        }
+    }
+}

@@ -2,28 +2,37 @@ package logging
 
 import (
 	"fmt"
+	setting "gin-blog/pkg/settting"
 	"log"
 	"os"
+
 	"time"
 )
 
-var (
-	LogSavePath = "runtime/logs/"
-	LogSaveName = "log"
-	LogFileExt  = "log"
-	TimeFormat  = "20060102"
-)
+// var (
+// 	LogSavePath = "runtime/logs/"
+// 	LogSaveName = "log"
+// 	LogFileExt  = "log"
+// 	TimeFormat  = "20060102"
+// )
 
 func getLogFilePath() string {
-	return fmt.Sprintf("%s", LogSavePath)
+	return fmt.Sprintf("%s%s", setting.AppSetting.RuntimeRootPath, setting.AppSetting.LogSavePath)
 }
 
-func getLogFileFullPath() string {
-	prefixPath := getLogFilePath()
-	suffixPath := fmt.Sprintf("%s%s.%s", LogSaveName, time.Now().Format(TimeFormat), LogFileExt)
-
-	return fmt.Sprintf("%s%s", prefixPath, suffixPath)
+func getLogFileName() string {
+	return fmt.Sprintf("%s%s.%s",
+		setting.AppSetting.LogSaveName,
+		time.Now().Format(setting.AppSetting.TimeFormat),
+		setting.AppSetting.LogFileExt)
 }
+
+// func getLogFileFullPath() string {
+// 	prefixPath := getLogFilePath()
+// 	suffixPath := getLogFileName()
+
+// 	return fmt.Sprintf("%s%s", prefixPath, suffixPath)
+// }
 
 func openLogFile(filepath string) *os.File {
 	_, err := os.Stat(filepath)
