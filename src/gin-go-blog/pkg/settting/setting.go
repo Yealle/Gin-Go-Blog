@@ -7,19 +7,6 @@ import (
 	"github.com/go-ini/ini"
 )
 
-var (
-	Cfg *ini.File
-
-	RunMode string
-
-	HTTPPort     int
-	ReadTimeout  time.Duration
-	WriteTimeout time.Duration
-
-	PageSize  int
-	JwtSecret string
-)
-
 type App struct {
 	JwtSecret       string
 	PageSize        int
@@ -114,6 +101,7 @@ func Setup() {
 		log.Fatalf("Cfg.MapTo ServerSetting err: %v", err)
 	}
 
+	// * time.Second 将值转换为 time.Duration 类型
 	ServerSetting.ReadTimeout = ServerSetting.ReadTimeout * time.Second
 	ServerSetting.WriteTimeout = ServerSetting.WriteTimeout * time.Second
 

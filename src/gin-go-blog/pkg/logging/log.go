@@ -34,9 +34,10 @@ func Setup() {
 	filepath := getLogFilePath()
 	filename := getLogFileName()
 
-	filepath += filename
-
-	F = openLogFile(filepath)
+	F, err := openLogFile(filename, filepath)
+	if err != nil {
+		log.Fatalln(err)
+	}
 
 	logger = log.New(F, DefaultPrefix, log.LstdFlags)
 }
