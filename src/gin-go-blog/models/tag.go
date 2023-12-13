@@ -15,52 +15,79 @@ type Tag struct {
 	State      int    `json:"state"`
 }
 
-func GetTags(pageNum int, pageSize int, maps interface{}) (tags []Tag) {
-	db.Where(maps).Offset(pageNum).Limit(pageSize).Find(&tags)
+func GetTags(pageNum int, pageSize int, maps interface{}) ([]*Tag, error) {
+	var tags []*Tag
+	err := db.Where(maps).Offset(pageNum).Limit(pageSize).Find(&tags).Error
 
-	return
+	if err != nil && err != gorm.ErrRecordNotFound {
+		return nil, err
+	}
+
+	return tags, nil
 }
 
-func GetTagTotal(maps interface{}) (count int) {
-	db.Model(&Tag{}).Where(maps).Count(&count)
+func GetTagTotal(maps interface{}) (int, error) {
+	var count int
+	err := db.Model(&Tag{}).Where(maps).Count(&count).Error
+	if err != nil {
+		return 0, err
+	}
 
-	return
+	return count, nil
 }
 
-func ExistTagByName(name string) bool {
+func ExistTagByName(name string) (bool, error) {
 	var tag Tag
-	db.Select("id").Where("name = ?", name).First(&tag)
+	err := db.Select("id").Where("name = ?", name).First(&tag).Error
 
-	return tag.ID > 0
+	if err != nil && err != gorm.ErrRecordNotFound {
+		return false, err
+	}
+
+	return tag.ID > 0, nil
 }
 
-func ExistTagByID(id int) bool {
+func ExistTagByID(id int) (bool, error) {
 	var tag Tag
-	db.Select("id").Where("id = ?", id).First(&tag)
+	err := db.Select("id").Where("id = ?", id).First(&tag).Error
 
-	return tag.ID > 0
+	if err != nil && err != gorm.ErrRecordNotFound {
+		return false, err
+	}
+	return tag.ID > 0, nil
 }
 
-func AddTag(name string, state int, createdBy string) bool {
-	db.Create(&Tag{
+func AddTag(name string, state int, createdBy string) error {
+	tag := Tag{
 		Name:      name,
 		State:     state,
 		CreatedBy: createdBy,
-	})
+	}
 
-	return true
+	if err := db.Create(&tag).Error; err != nil {
+		return err
+	}
+
+	return nil
 }
 
-func DeleteTag(id int) bool {
-	db.Where("id =  ?", id).Delete(&Tag{})
+func DeleteTag(id int) error {
+	err := db.Where("id =  ?", id).Delete(&Tag{}).Error
 
-	return true
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
-func EditTag(id int, data interface{}) bool {
-	db.Model(&Tag{}).Where("id = ?", id).Updates(data)
+func EditTag(id int, data interface{}) error {
+	err := db.Model(&Tag{}).Where("id = ?", id).Updates(data).Error
 
-	return true
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (tag *Tag) BeforeCreate(scope *gorm.Scope) error {
@@ -75,7 +102,10 @@ func (tag *Tag) BeforeUpdate(scope *gorm.Scope) error {
 	return nil
 }
 
-func CleanAllTag() bool {
-	db.Unscoped().Where("deleted_on != ?", 0).Delete(&Tag{})
-	return true
+func CleanAllTag() error {
+	err := db.Unscoped().Where("delete_on != ?", 0).Delete(&Tag{}).Error
+	if err != nil {
+		return err
+	}
+	return nil
 }

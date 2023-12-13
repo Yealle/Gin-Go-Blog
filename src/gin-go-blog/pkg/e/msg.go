@@ -14,6 +14,19 @@ var MsgFlags = map[int]string{
 	ERROR_UPLOAD_CHECK_IMAGE_FORMAT: "图片格式错误",
 	ERROR_UPLOAD_CHECK_IMAGE_FAIL:   "图片检查错误",
 	ERROR_UPLOAD_SAVE_IMAGE_FAIL:    "图片保存错误",
+	ERROR_CHECK_EXIST_ARTICLE_FAIL:  "检查文章是否存在失败",
+	ERROR_GET_ARTICLE_FAIL:          "获取单个文章失败",
+	ERROR_GET_ARTICLES_FAIL:         "获取多个文章失败",
+	ERROR_COUNT_ARTICLE_FAIL:        "统计文章失败",
+	ERROR_ADD_ARTICLE_FAIL:          "新增文章失败",
+	ERROR_EDIT_ARTICLE_FAIL:         "修改文章失败",
+	ERROR_DELETE_ARTICLE_FAIL:       "删除文章失败",
+	ERROR_CHECK_EXIST_TAG_FAIL:      "检查标签是否存在失败",
+	ERROR_GET_TAGS_FAIL:             "获取多个标签失败",
+	ERROR_COUNT_TAG_FAIL:            "统计标签失败",
+	ERROR_ADD_TAG_FAIL:              "新增标签失败",
+	ERROR_EDIT_TAG_FAIL:             "修改标签失败",
+	ERROR_DELETE_TAG_FAIL:           "删除标签失败",
 }
 
 func GetMsg(code int) string {

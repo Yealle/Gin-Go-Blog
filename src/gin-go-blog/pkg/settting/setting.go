@@ -45,6 +45,16 @@ type Database struct {
 
 var DatabaseSetting = &Database{}
 
+type Redis struct {
+	Host        string
+	Password    string
+	MaxIdle     int
+	MaxActive   int
+	IdleTimeout time.Duration
+}
+
+var RedisSetting = &Redis{}
+
 // 改成Setup
 // func init() {
 // 	var err error

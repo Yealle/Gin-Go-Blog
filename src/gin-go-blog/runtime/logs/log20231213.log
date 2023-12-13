@@ -1,0 +1,3 @@
+[INFO][request.go:11]2023/12/13 22:36:01 [err.key: %s, err.message: %s CoverImageUrl.Required Can not be empty]
+[INFO][request.go:11]2023/12/13 22:36:29 [err.key: %s, err.message: %s CoverImageUrl.Required Can not be empty]
+[INFO][request.go:11]2023/12/13 22:37:28 [err.key: %s, err.message: %s CoverImageUrl.Required Can not be empty]

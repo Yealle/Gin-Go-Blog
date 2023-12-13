@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"gin-blog/models"
+	"gin-blog/pkg/gredis"
 	"gin-blog/pkg/logging"
 	setting "gin-blog/pkg/settting"
 	"gin-blog/routers"
@@ -17,10 +18,15 @@ import (
 	"github.com/fvbock/endless"
 )
 
-func main() {
+func init() {
 	setting.Setup()
 	models.Setup()
 	logging.Setup()
+	gredis.Setup()
+	// runtime.GOMAXPROCS(runtime.NumCPU())
+}
+
+func main() {
 
 	endless.DefaultReadTimeOut = setting.ServerSetting.ReadTimeout
 	endless.DefaultWriteTimeOut = setting.ServerSetting.WriteTimeout
