@@ -27,6 +27,7 @@ var MsgFlags = map[int]string{
 	ERROR_ADD_TAG_FAIL:              "新增标签失败",
 	ERROR_EDIT_TAG_FAIL:             "修改标签失败",
 	ERROR_DELETE_TAG_FAIL:           "删除标签失败",
+	ERROR_EXPORT_TAG_FAIL:           "导出标签失败",
 }
 
 func GetMsg(code int) string {

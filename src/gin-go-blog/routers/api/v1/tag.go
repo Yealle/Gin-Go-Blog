@@ -3,6 +3,7 @@ package v1
 import (
 	"gin-blog/pkg/app"
 	"gin-blog/pkg/e"
+	"gin-blog/pkg/export"
 	setting "gin-blog/pkg/settting"
 	"gin-blog/pkg/util"
 	"gin-blog/service/tag_service"
@@ -156,11 +157,8 @@ func EditTag(c *gin.Context) {
 // @Summary 删除文章标签
 // @Produce  json
 // @Param id path int true "ID"
-// @Param name query string true "ID"
-// @Param state query int false "State"
-// @Param modified_by query string true "ModifiedBy"
 // @Success 200 {string} json "{"code":200,"data":{},"msg":"ok"}"
-// @Router /api/v1/tags/{id} [put]
+// @Router /api/v1/tags/{id} [delete]
 func DeleteTag(c *gin.Context) {
 	appG := app.Gin{C: c}
 	id := com.StrTo(c.Param("id")).MustInt()
@@ -192,4 +190,39 @@ func DeleteTag(c *gin.Context) {
 	}
 
 	appG.Response(http.StatusOK, e.SUCCESS, nil)
+}
+
+// @Summary 导出文章标签
+// @Produce  json
+// @Param name query string true "ID"
+// @Param state query int false "State"
+// @Success 200 {string} json "{"code":200,"data":{},"msg":"ok"}"
+// @Router /api/v1/tags/export [post]
+func ExportTag(c *gin.Context) {
+	appG := app.Gin{C: c}
+
+	name := c.PostForm("name")
+	state := -1
+	if arg := c.PostForm("state"); arg != "" {
+		state = com.StrTo(arg).MustInt()
+	}
+
+	tagService := tag_service.Tag{
+		Name:  name,
+		State: state,
+
+		PageNum:  util.GetPage(c),
+		PageSize: setting.AppSetting.PageSize,
+	}
+
+	filename, err := tagService.Export()
+
+	if err != nil {
+		appG.Response(http.StatusOK, e.ERROR_EXPORT_TAG_FAIL, nil)
+	}
+
+	appG.Response(http.StatusOK, e.SUCCESS, map[string]string{
+		"export_url":      export.GetExcelFulUrl(filename),
+		"export_save_url": export.GetExcelFullPath() + filename,
+	})
 }

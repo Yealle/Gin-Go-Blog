@@ -3,9 +3,15 @@ package tag_service
 import (
 	"encoding/json"
 	"gin-blog/models"
+	"gin-blog/pkg/export"
 	"gin-blog/pkg/gredis"
 	"gin-blog/pkg/logging"
 	"gin-blog/service/cache_service"
+	"log"
+	"strconv"
+	"time"
+
+	"github.com/tealeg/xlsx"
 )
 
 type Tag struct {
@@ -101,4 +107,57 @@ func (t *Tag) getMaps() map[string]interface{} {
 
 func (t *Tag) CleanAll() error {
 	return models.CleanAllTag()
+}
+
+func (t *Tag) Export() (string, error) {
+	tags, err := t.GetAll()
+	log.Println("tag_service tag.go Export()")
+	log.Println(tags)
+
+	if err != nil {
+		return "", err
+	}
+
+	file := xlsx.NewFile()
+	sheet, err := file.AddSheet("标签信息")
+	if err != nil {
+		return "", err
+	}
+
+	titiles := []string{"ID", "名称", "创建人", "创建时间", "修改人", "修改时间"}
+	row := sheet.AddRow()
+
+	var cell *xlsx.Cell
+	for _, title := range titiles {
+		cell = row.AddCell()
+		cell.Value = title
+	}
+
+	for _, tag := range tags {
+		values := []string{
+			strconv.Itoa(tag.ID),
+			tag.Name,
+			tag.CreatedBy,
+			strconv.Itoa(tag.CreatedOn),
+			tag.ModifiedBy,
+			strconv.Itoa(tag.ModifiedOn),
+		}
+		log.Println(values)
+		row = sheet.AddRow()
+		for _, value := range values {
+			cell = row.AddCell()
+			cell.Value = value
+		}
+	}
+
+	time := strconv.Itoa(int(time.Now().Unix()))
+	filename := "tag-" + time + ".xlsx"
+
+	fullpath := export.GetExcelFullPath() + filename
+	err = file.Save(fullpath)
+	if err != nil {
+		return "", err
+	}
+
+	return filename, nil
 }
