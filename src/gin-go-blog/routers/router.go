@@ -48,6 +48,8 @@ func InitRouter() *gin.Engine {
 		apiv1.POST("/tags/export", v1.ExportTag)
 		// staticFC
 		apiv1.StaticFS("/export", http.Dir(export.GetExcelFullPath()))
+		//导入标签
+		apiv1.POST("/tags/import", v1.ImportTag)
 
 		//获取文章列表
 		apiv1.GET("/articles", v1.GetArticles)

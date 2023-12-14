@@ -4,6 +4,7 @@ import (
 	"gin-blog/pkg/app"
 	"gin-blog/pkg/e"
 	"gin-blog/pkg/export"
+	"gin-blog/pkg/logging"
 	setting "gin-blog/pkg/settting"
 	"gin-blog/pkg/util"
 	"gin-blog/service/tag_service"
@@ -225,4 +226,27 @@ func ExportTag(c *gin.Context) {
 		"export_url":      export.GetExcelFulUrl(filename),
 		"export_save_url": export.GetExcelFullPath() + filename,
 	})
+}
+
+func ImportTag(c *gin.Context) {
+	appG := app.Gin{C: c}
+
+	file, _, err := c.Request.FormFile("file")
+
+	if err != nil {
+		logging.Warn()
+		appG.Response(http.StatusOK, e.ERROR, nil)
+		return
+	}
+
+	tagService := tag_service.Tag{}
+	err = tagService.Import(file)
+
+	if err != nil {
+		logging.Warn(err)
+		appG.Response(http.StatusOK, e.ERROR_IMPORT_TAG_FAIL, nil)
+		return
+	}
+
+	appG.Response(http.StatusOK, e.SUCCESS, nil)
 }

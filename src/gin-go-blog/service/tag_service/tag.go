@@ -7,10 +7,12 @@ import (
 	"gin-blog/pkg/gredis"
 	"gin-blog/pkg/logging"
 	"gin-blog/service/cache_service"
+	"io"
 	"log"
 	"strconv"
 	"time"
 
+	"github.com/360EntSecGroup-Skylar/excelize"
 	"github.com/tealeg/xlsx"
 )
 
@@ -160,4 +162,26 @@ func (t *Tag) Export() (string, error) {
 	}
 
 	return filename, nil
+}
+
+func (t *Tag) Import(r io.Reader) error {
+
+	xlsx, err := excelize.OpenReader(r)
+	if err != nil {
+		return err
+	}
+
+	rows := xlsx.GetRows("标签信息")
+	for i, row := range rows {
+		if i > 0 {
+			var data []string
+			for _, colCell := range row {
+				data = append(data, colCell)
+			}
+
+			models.AddTag(data[1], 1, data[2])
+		}
+	}
+
+	return nil
 }
