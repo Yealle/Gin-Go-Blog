@@ -9,6 +9,7 @@ import (
 
 	_ "gin-blog/docs"
 	"gin-blog/middleware/jwt"
+	"gin-blog/pkg/export"
 	setting "gin-blog/pkg/settting"
 	"gin-blog/pkg/upload"
 	"gin-blog/routers/api"
@@ -45,6 +46,8 @@ func InitRouter() *gin.Engine {
 		apiv1.DELETE("/tags/:id", v1.DeleteTag)
 		//导出标签
 		apiv1.POST("/tags/export", v1.ExportTag)
+		// staticFC
+		apiv1.StaticFS("/export", http.Dir(export.GetExcelFullPath()))
 
 		//获取文章列表
 		apiv1.GET("/articles", v1.GetArticles)
